@@ -1,4 +1,5 @@
 const User = require('../model/user');
+const Profile = require('../model/profile');
 const jwt = require('jsonwebtoken');
 
 // Generate JWT
@@ -24,6 +25,16 @@ const signup = async (req, res) => {
         balance: 100, // signup bonus
         role: role || 'user' // default role
      });
+
+     // 🪄 Create a profile automatically
+    await Profile.create({
+      user: user._id,
+      name: username,
+      bonus: 100,
+      balance: 100,
+      amountInvested: 0,
+      profitEarned: 0
+    });
 
     res.status(201).json({
       _id: user._id,
@@ -55,6 +66,7 @@ const login = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id),
     });
   } catch (err) {
