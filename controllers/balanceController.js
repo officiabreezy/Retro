@@ -1,6 +1,6 @@
 const User = require('../model/user');
 const Transaction = require('../model/transaction');
-const sendEmail = require('../utils/email');
+// const sendEmail = require('../utils/email');
 
 
 const getBalance = async (req, res) => {
@@ -34,20 +34,20 @@ const deposit = async (req, res) => {
     });
     await transactions.save();
 
-    const adminEmail = process.env.ADMIN_EMAIL;
-    await sendEmail(
-      adminEmail,
-      `New Deposit Alert — ${user.username}`,
-      `
-A new deposit was made by ${user.username} (${user.email}).
+//     const adminEmail = process.env.ADMIN_EMAIL;
+//     await sendEmail(
+//       adminEmail,
+//       `New Deposit Alert — ${user.username}`,
+//       `
+// A new deposit was made by ${user.username} (${user.email}).
 
-📦 Amount: $${amount}
-💰 New Balance: $${user.balance}
-🕒 Date: ${new Date().toLocaleString()}
+// 📦 Amount: $${amount}
+// 💰 New Balance: $${user.balance}
+// 🕒 Date: ${new Date().toLocaleString()}
 
-— RetroMiner Automated Notification
-      `
-    );
+// — RetroMiner Automated Notification
+//       `
+//     );
 
     res.json({ message: 'Deposit successful', balance: user.balance });
   } catch (err) {
