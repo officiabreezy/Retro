@@ -3,6 +3,7 @@ const User = require('../model/user');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware');
 const Profile = require('../model/profile');
+const Settings = require('../model/settings');
 
 const router = express.Router();
 
@@ -58,6 +59,33 @@ router.delete('/users/:id', protect, admin, async (req, res) => {
 
     await user.deleteOne();
     res.json({ message: 'User deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.get('/wallets', protect, admin, async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) settings = await Settings.create({});
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.put('/wallets', protect, admin, async (req, res) => {
+  const { usdWallet, btcWallet, ethWallet } = req.body;
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) settings = await Settings.create({});
+
+    if (usdWallet !== undefined) settings.usdWallet = usdWallet;
+    if (btcWallet !== undefined) settings.btcWallet = btcWallet;
+    if (ethWallet !== undefined) settings.ethWallet = ethWallet;
+
+    await settings.save();
+    res.json({ message: 'Wallet addresses updated successfully', settings });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
