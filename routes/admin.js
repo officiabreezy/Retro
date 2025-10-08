@@ -64,16 +64,6 @@ router.delete('/users/:id', protect, admin, async (req, res) => {
   }
 });
 
-router.get('/wallets', protect, admin, async (req, res) => {
-  try {
-    let settings = await Settings.findOne();
-    if (!settings) settings = await Settings.create({});
-    res.json(settings);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
-
 router.put('/wallets', protect, admin, async (req, res) => {
   const { usdWallet, btcWallet, ethWallet } = req.body;
   try {

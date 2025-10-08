@@ -1,7 +1,17 @@
 const User = require('../model/user');
 const Transaction = require('../model/transaction');
-// const sendEmail = require('../utils/email');
+const Settings = require('../model/settings');
 
+
+const wallets = async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) settings = await Settings.create({});
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
 
 const getBalance = async (req, res) => {
   try {
@@ -87,4 +97,4 @@ const getTransactions = async (req, res) => {
   }
 };
 
-module.exports = { getBalance, deposit, withdraw, getTransactions };
+module.exports = { getBalance, deposit, withdraw, getTransactions, wallets };
